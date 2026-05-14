@@ -1713,14 +1713,6 @@ export function DutchPayCalculator() {
                 <div className="space-y-3">
                   {renderReceiptSummary(entry.result)}
 
-                  {entry.result.notices.length > 0 && (
-                    <div className="space-y-1 rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-primary">
-                      {entry.result.notices.map((notice) => (
-                        <p key={notice}>• {notice}</p>
-                      ))}
-                    </div>
-                  )}
-
                   {entry.result.warnings.length > 0 && (
                     <div className="space-y-1 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
                       {entry.result.warnings.map((warning) => (
@@ -1733,9 +1725,22 @@ export function DutchPayCalculator() {
 
                   <details className="rounded-lg border border-border p-3 text-sm">
                     <summary className="cursor-pointer font-medium">영수증 분석 보기</summary>
-                    <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap text-xs text-muted-foreground">
-                      {entry.analysisText}
-                    </pre>
+
+                    {entry.result.notices.length > 0 && (
+                      <div className="mt-3 space-y-1 rounded-lg border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
+                        <p className="font-medium text-foreground">분석 참고</p>
+                        {entry.result.notices.map((notice) => (
+                          <p key={notice}>• {notice}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="mt-3">
+                      <p className="mb-2 text-xs font-medium text-foreground">AI 분석 원문</p>
+                      <pre className="max-h-48 overflow-auto whitespace-pre-wrap text-xs text-muted-foreground">
+                        {entry.analysisText}
+                      </pre>
+                    </div>
                   </details>
                 </div>
               )}
@@ -1753,14 +1758,6 @@ export function DutchPayCalculator() {
 
           {renderReceiptSummary(receiptParseResult)}
 
-          {receiptParseResult.notices.length > 0 && (
-            <div className="space-y-1 rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-primary">
-              {receiptParseResult.notices.map((notice) => (
-                <p key={notice}>• {notice}</p>
-              ))}
-            </div>
-          )}
-
           {receiptParseResult.warnings.length > 0 && (
             <div className="space-y-1 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
               {receiptParseResult.warnings.map((warning) => (
@@ -1770,6 +1767,18 @@ export function DutchPayCalculator() {
           )}
 
           {renderReceiptItemList(receiptParseResult, "max-h-48")}
+
+          {receiptParseResult.notices.length > 0 && (
+            <details className="rounded-lg border border-border p-3 text-sm">
+              <summary className="cursor-pointer font-medium">합산 분석 보기</summary>
+              <div className="mt-3 space-y-1 rounded-lg border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
+                <p className="font-medium text-foreground">분석 참고</p>
+                {receiptParseResult.notices.map((notice) => (
+                  <p key={notice}>• {notice}</p>
+                ))}
+              </div>
+            </details>
+          )}
 
           {applyMode === "quick" ? (
             <Button
@@ -2407,8 +2416,8 @@ export function DutchPayCalculator() {
                         onFocus={(event) => event.currentTarget.select()}
                         value={detailTotalAmount || ""}
                         onChange={(event) => setDetailTotalAmount(parseMoneyInput(event.target.value))}
-                        placeholder="영수증 또는 실제 결제금액"
-                        className="text-2xl font-bold h-16 pl-20 pr-12 text-right"
+                        placeholder="결제금액 입력"
+                        className="text-2xl font-bold h-16 pl-20 pr-12 text-right placeholder:text-base sm:placeholder:text-2xl"
                       />
                       {detailTotalAmount > 0 && (
                         <button
